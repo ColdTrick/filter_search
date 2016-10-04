@@ -1,0 +1,11 @@
+.elgg-menu-filter .elgg-menu-item-filter-search {
+	float: right;
+}
+
+.elgg-form-filter-search {
+	bottom: -35px;
+    position: absolute;
+    right: 0;
+    width: 200px;
+    z-index: 1;
+}
