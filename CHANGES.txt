@@ -1,2 +1,6 @@
 Version history
 ===============
+
+1.0 (2016-10-06):
+
+- changed: limited results to container in groups listings
