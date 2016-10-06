@@ -9,6 +9,11 @@ if (!empty($page_owner_guid)) {
 	elgg_set_page_owner_guid($page_owner_guid);
 }
 
+$container_guid = (int) get_input('_cg');
+if (!empty($container_guid)) {
+	$search_params['container_guid'] = $container_guid;
+}
+
 $type = elgg_extract('type', $search_params);
 $subtype = elgg_extract('subtype', $search_params);
 
