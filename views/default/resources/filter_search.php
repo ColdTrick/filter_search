@@ -22,12 +22,17 @@ if (empty($search_results)) {
 	$search_results = elgg_trigger_plugin_hook('search', $type, $search_params, []);
 }
 
-if (empty($search_results)) {
-	$content = elgg_echo('notfound');
-} else {
-	$content = elgg_view_entity_list($search_results['entities'], ['full_view' => false]);
-}
+$content = elgg_view_entity_list($search_results['entities'], [
+	'full_view' => false,
+	'no_results' => elgg_echo('notfound'),
+]);
 
-$body = elgg_view_layout('content', ['content' => $content, 'filter_context' => 'filter_search']);
+$title = elgg_echo("item:$type:$subtype");
 
-echo elgg_view_page('', $body);
+$body = elgg_view_layout('content', [
+	'title' => $title,
+	'content' => $content,
+	'filter_context' => 'filter_search',
+]);
+
+echo elgg_view_page($title, $body);

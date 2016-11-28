@@ -13,6 +13,29 @@ function filter_search_init() {
 	elgg_extend_view('css/elgg', 'filter_search/filter_search.css');
 	elgg_register_plugin_hook_handler('register', 'menu:filter', 'filter_search_register_filter_menu');
 	elgg_register_plugin_hook_handler('route', 'all', 'filter_search_route_all');
+	
+	// special fix for various pages as it does not draw a filter menu
+	elgg_extend_view('resources/blog/group', 'filter_search/no_filter_menu_fix', 400);
+	elgg_extend_view('resources/discussion/group', 'filter_search/no_filter_menu_fix', 400);
+	elgg_extend_view('resources/discussion/all', 'filter_search/no_filter_menu_fix', 400);
+	
+	
+	elgg_register_plugin_hook_handler('view_vars', 'page/layouts/content', function($type, $hook, $return, $params) {
+		if (!elgg_in_context('poll')) {
+			return;
+		}
+		
+		if (!(elgg_get_page_owner_entity() instanceof \ElggGroup)) {
+			return;
+		}
+		
+		if (!stristr(current_page_url(), '/group/')) {
+			return;
+		}
+		
+		$return['filter'] = elgg_view_menu('filter', array('sort_by' => 'priority', 'class' => 'elgg-menu-hz'));;
+		return $return;
+	});
 }
 
 function filter_search_get_supported_contexts() {
@@ -23,6 +46,27 @@ function filter_search_get_supported_contexts() {
 			'search_params' => [
 				'type' => 'object',
 				'subtype' => 'question',
+			],
+		],
+		'blog' => [
+			'handler' => 'blog',
+			'search_params' => [
+				'type' => 'object',
+				'subtype' => 'blog',
+			],
+		],
+		'poll' => [
+			'handler' => 'poll',
+			'search_params' => [
+				'type' => 'object',
+				'subtype' => 'poll',
+			],
+		],
+		'discussion' => [
+			'handler' => 'discussion',
+			'search_params' => [
+				'type' => 'object',
+				'subtype' => 'discussion',
 			],
 		],
 	];
@@ -52,6 +96,11 @@ function filter_search_register_filter_menu($hook, $type, $return_value, $params
 	
 	if (!array_key_exists($context, $supported)) {
 		return;
+	}
+	
+	if ($context === 'discussion') {
+		// no filter menu for discussion pages
+		$return_value = [];
 	}
 	
 	$form = elgg_view_form('filter_search', [
