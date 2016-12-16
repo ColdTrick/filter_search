@@ -1,6 +1,10 @@
 Version history
 ===============
 
+1.1 (2016-12-16):
+
+- added: filter search capabilities for blog, poll, discussion
+
 1.0 (2016-10-06):
 
 - changed: limited results to container in groups listings
