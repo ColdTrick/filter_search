@@ -28,6 +28,21 @@ class Views {
 			return;
 		}
 		
+		Views::fixFilterMenu($hook, $type, $return_value, $params);
+	}
+	
+	/**
+	 * Add the filter menu to the view vars
+	 *
+	 * @param string $hook         the name of the hook
+	 * @param string $type         the type of the hook
+	 * @param array  $return_value current return value
+	 * @param array  $params       supplied params
+	 *
+	 * @return void|array
+	 */
+	public static function fixFilterMenu($hook, $type, $return_value, $params) {
+		
 		$return_value['filter'] = elgg_view_menu('filter', [
 			'sort_by' => 'priority',
 			'class' => 'elgg-menu-hz',
