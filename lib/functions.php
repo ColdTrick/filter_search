@@ -10,7 +10,7 @@
  */
 function filter_search_get_supported_contexts() {
 	
-	return [
+	$result = [
 		'questions' => [
 			'handler' => 'questions',
 			'search_params' => [
@@ -40,4 +40,6 @@ function filter_search_get_supported_contexts() {
 			],
 		],
 	];
+	
+	return elgg_trigger_plugin_hook('supported_context', 'filter_search', $result, $result);
 }
