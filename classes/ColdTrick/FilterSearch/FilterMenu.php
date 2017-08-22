@@ -28,6 +28,7 @@ class FilterMenu {
 			$return_value = [];
 		}
 		
+		// add search button/form
 		$form = elgg_view_form('filter_search', [
 			'action' => $context . '/filter_search',
 			'method' => 'GET',
@@ -47,8 +48,53 @@ class FilterMenu {
 			'href' => false,
 			'title' => elgg_echo('search'),
 			'priority' => 999,
-			'selected' => (bool) stristr(current_page_url(), '/filter_search?'),
 		]);
+		
+		// add search query tab
+		$search_params = elgg_extract($context, $supported);
+		$search_params['page_owner'] = elgg_get_page_owner_guid();
+		$search_params['context'] = $context;
+		
+		$hmac = elgg_build_hmac($search_params);
+		$hash = $hmac->getToken();
+		$session = elgg_get_session();
+		
+		$query = get_input('q');
+		$selected = false;
+		$url = elgg_http_add_url_query_elements(current_page_url(), [
+			'limit' => null,
+			'offset' => null,
+		]);
+		if (!empty($query)) {
+			$selected = true;
+			// store result
+			$session->set("filter_search_{$hash}", $url);
+		} else {
+			// check if we store a previous query
+			$url = $session->get("filter_search_{$hash}");
+			if (!empty($url)) {
+				$parts = explode('&', parse_url($url, PHP_URL_QUERY));
+				foreach ($parts as $part) {
+					list($key, $value) = explode('=', $part);
+					if ($key !== 'q') {
+						continue;
+					}
+					
+					$query = $value;
+					break;
+				}
+			}
+		}
+		
+		if (!empty($query)) {
+			$return_value[] = \ElggMenuItem::factory([
+				'name' => 'filter_search_query',
+				'text' => elgg_echo('filter_search:menu:filter:query', [$query]),
+				'href' => $url,
+				'priority' => 998,
+				'selected' => $selected,
+			]);
+		}
 		
 		return $return_value;
 	}
