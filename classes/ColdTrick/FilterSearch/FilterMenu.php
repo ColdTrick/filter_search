@@ -65,13 +65,16 @@ class FilterMenu {
 			'limit' => null,
 			'offset' => null,
 		]);
+		
+		$session_data = $session->get('filter_search');
 		if (!empty($query)) {
 			$selected = true;
 			// store result
-			$session->set("filter_search_{$hash}", $url);
+			$session_data[$hash] = $url;
+			$session->set('filter_search', $session_data);
 		} else {
 			// check if we store a previous query
-			$url = $session->get("filter_search_{$hash}");
+			$url = elgg_extract($hash, $session_data);
 			if (!empty($url)) {
 				$parts = explode('&', parse_url($url, PHP_URL_QUERY));
 				foreach ($parts as $part) {
@@ -87,6 +90,7 @@ class FilterMenu {
 		}
 		
 		if (!empty($query)) {
+			elgg_unregister_plugin_hook_handler('view_vars', 'page/default', '\ColdTrick\FilterSearch\FilterMenu::cleanupSessionData');
 			$return_value[] = \ElggMenuItem::factory([
 				'name' => 'filter_search_query',
 				'text' => elgg_echo('filter_search:menu:filter:query', [$query]),
@@ -142,5 +146,21 @@ class FilterMenu {
 		}
 		
 		return $return_value;
+	}
+	
+	/**
+	 * If not used this will remove search query history data from session
+	 *
+	 * @param string          $hook         the name of the hook
+	 * @param string          $type         the type of the hook
+	 * @param \ElggMenuItem[] $return_value current return value
+	 * @param array           $params       supplied params
+	 *
+	 * @return void
+	 */
+	public static function cleanupSessionData($hook, $type, $return_value, $params) {
+		
+		$session = elgg_get_session();
+		$session->remove('filter_search');
 	}
 }
