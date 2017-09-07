@@ -29,9 +29,18 @@ $content = elgg_view_entity_list($search_results['entities'], [
 
 $title = elgg_echo("item:$type:$subtype");
 
+$filter = null;
+if (elgg_get_page_owner_entity() instanceof \ElggGroup) {
+	$filter = elgg_view_menu('filter', [
+		'sort_by' => 'priority',
+		'class' => 'elgg-menu-hz',
+	]);
+}
+
 $body = elgg_view_layout('content', [
 	'title' => $title,
 	'content' => $content,
+	'filter' => $filter,
 	'filter_context' => 'filter_search',
 ]);
 

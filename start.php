@@ -20,6 +20,7 @@ function filter_search_init() {
 	
 	// plugin hooks
 	elgg_register_plugin_hook_handler('register', 'menu:filter', '\ColdTrick\FilterSearch\FilterMenu::registerFilterSearch');
+	elgg_register_plugin_hook_handler('register', 'menu:filter', '\ColdTrick\FilterSearch\FilterMenu::registerFilterAll', 999);
 	elgg_register_plugin_hook_handler('route', 'all', '\ColdTrick\FilterSearch\Router::all');
 	elgg_register_plugin_hook_handler('view_vars', 'page/layouts/content', '\ColdTrick\FilterSearch\Views::pollContentLayoutViewVars');
 }

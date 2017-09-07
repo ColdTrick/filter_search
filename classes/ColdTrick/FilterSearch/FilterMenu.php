@@ -98,4 +98,49 @@ class FilterMenu {
 		
 		return $return_value;
 	}
+	
+	/**
+	 * Adds all/back menu item to support filter search
+	 *
+	 * @param string          $hook         the name of the hook
+	 * @param string          $type         the type of the hook
+	 * @param \ElggMenuItem[] $return_value current return value
+	 * @param array           $params       supplied params
+	 *
+	 * @return void|\ElggMenuItem[]
+	 */
+	public static function registerFilterAll($hook, $type, $return_value, $params) {
+		
+		$context = elgg_get_context();
+		$supported = filter_search_get_supported_contexts();
+		
+		if (!array_key_exists($context, $supported)) {
+			return;
+		}
+		
+		$all_found = false;
+		foreach ($return_value as $menu_item) {
+			if ($menu_item->getName() == 'all') {
+				$all_found = true;
+				break;
+			}
+		}
+		
+		if (!$all_found) {
+			$url = "{$context}/all";
+			$page_owner = elgg_get_page_owner_entity();
+			if ($page_owner instanceof \ElggGroup) {
+				$url = "{$context}/group/{$page_owner->guid}/all";
+			}
+			
+			$return_value[] = \ElggMenuItem::factory([
+				'name' => 'all',
+				'text' => elgg_echo('all'),
+				'href' => $url,
+				'priority' => 1,
+			]);
+		}
+		
+		return $return_value;
+	}
 }
