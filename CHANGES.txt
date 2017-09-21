@@ -1,6 +1,12 @@
 Version history
 ===============
 
+2.1 (2017-09-21):
+
+- added: filter search query is saved in session for reuse
+- changed: search memory is now only when staying within context
+- fixed: correctly set filter menu on result page and allow a way back
+
 2.0 (2017-07-31):
 
 - added: plugin hook to extends supported contexts
