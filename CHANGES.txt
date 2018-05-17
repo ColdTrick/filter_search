@@ -1,6 +1,10 @@
 Version history
 ===============
 
+2.2 (2018-05-17):
+
+- added: support for pagination of filter search results
+
 2.1 (2017-09-21):
 
 - added: filter search query is saved in session for reuse
